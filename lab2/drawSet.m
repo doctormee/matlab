@@ -5,12 +5,12 @@ function  drawSet(rho, N)
 % approximation of the border with N points via circumscribed and inscribed
 % polygons
     phi0 = 0;
-    phi1 = 2*pi;
+    phi1 = 2 .* pi;
     t = linspace(phi0, phi1, N);  % linear grid with N points
     x = zeros(1, N);            % support vector coordinates  
     y = zeros(1, N);            
-    polyX = zeros(1, N+1);      % polygons coordinates
-    polyY = zeros(1, N+1);  
+    polyX = zeros(1, N + 1);      % polygons coordinates
+    polyY = zeros(1, N + 1);  
     syms c;                     % tangent variable in ax+by+c=0
     syms sx;    % tangent intersection
     syms sy;    % coordinates
@@ -21,7 +21,7 @@ function  drawSet(rho, N)
     for k = 1:N    
         r1 = r2;                % saving last directions
         r2 = [cos(t(k)) sin(t(k))]; % current direction
-        [value point] = rho(r2);      % finding support vector for current directio
+        [val point] = rho(r2);      % finding support vector for current directio
         x(k) = point(1); % tangent point
         y(k) = point(2); % coordinates
         if(k == 1)
@@ -52,16 +52,16 @@ function  drawSet(rho, N)
                                      r2(1)*sx + r2(2)*sy + c2, ...
                                      sx, sy);
     end;
-    % visualise approximation with inscribed poligons
+    % inscribed poligons
     grid on;
-    plot(x, y, 'g-');
+    plot(x, y, 'r-');
     hold on;
-    % getting the chain of points connected
-    polyX(N+1) = polyX(1);
-    polyY(N+1) = polyY(1);
-    % visualise approximation with circumscribed poligons
-    plot(polyX, polyY, 'r-');
-    legend('piecewise linear approximation via inscribed poligons', ...
-           'piecewise linear approximation via circumscribed poligons');
+    % connecting points
+    polyX(N + 1) = polyX(1);
+    polyY(N + 1) = polyY(1);
+    % circumscribed poligons
+    plot(polyX, polyY, 'b-');
+    legend('approximation via inscribed polygons', ...
+           'approximation via circumscribed polygons');
     hold off
 end

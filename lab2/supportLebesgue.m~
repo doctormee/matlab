@@ -1,0 +1,9 @@
+function [ rho ] = supportLebesgue( f, opts )
+%UNTITLED2 Summary of this function goes here
+%   Detailed explanation goes here
+    function [c, ceq] = nonlcon(x) 
+        ceq = [];
+        c = f(x);
+    end
+    rho = @(dir) fmincon(@(x) -dot(x(1), x(2)) , [dir, 0 ] ,[],[],[],[],[],[],@nonlcon,opts);
+end
