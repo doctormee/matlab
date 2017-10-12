@@ -79,7 +79,11 @@ end
 
 function [ f ] = getFuncWalsh( n, a, b )
 %getFuncWalsh returns n-th Walsh function
-    f = @(x) sign(sin( pi .* n .* x));
+    bin = de2bi(n);
+    f = @(x) 1;
+    for i = 1:numel(bin)
+        f = @(x) f(x) .* sign(sin( pi .* 2 .^ i .* x)) .^ (bin(i));
+    end
     f = @(x) f((x - a) ./ (b - a));
 end
 
