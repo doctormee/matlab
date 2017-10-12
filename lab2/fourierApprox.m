@@ -22,12 +22,14 @@ function [ ] = fourierApprox( f, a, b, n, meth )
 %         A = double(int(f(t) * fourFunc(t), t, a, b)) ./ (b - a);
         A = scalarL2(f, fourFunc, a, b) ./ funcNorm(fourFunc, a, b);
         series = @(x) series(x) + A .* fourFunc(x);
-        plot(lsp, series(lsp));
+        plot(lsp, series(lsp), lsp, f(lsp));
+
         grid on;
         axis([a b fmin - epsilon fmax + epsilon]);
         xlabel('X');
         ylabel('Y');
         title(['Step number ' num2str(i)]);
+        legend('Fourier sum', 'Function');
         getframe();
     end
 end
