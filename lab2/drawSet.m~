@@ -33,7 +33,8 @@ function  drawSet(rho, N)
             c2 = solve(r2(1)*x(k) + r2(2)*y(k) + c, c); % c for tangent of current point
             % find point of intersection
             [polyX(k-1), polyY(k-1)] = solve(r1(1)*sx + r1(2)*sy + c1, ...
-                                             r2(1)*sx + r2(2)*sy + c2, sx, sy);
+                                             r2(1)*sx + r2(2)*sy + c2, ...
+                                             sx, sy);
             end;
         end;
     end;
@@ -48,7 +49,7 @@ function  drawSet(rho, N)
         polyY(N) = polyY(1);
     else
         [polyX(N), polyY(N)] = solve(r1(1)*sx + r1(2)*sy + c1, ...
-                                     r2(1)*sx + r2(2)*sy + c2, sx, sy);
+                                     r2(1)*sx + r2(2)*sy + c2,                             sx, sy);
     end;
     % inscribed poligons
     figure;
