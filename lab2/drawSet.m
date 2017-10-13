@@ -11,7 +11,6 @@ function  drawSet(rho, N)
     inscY = zeros(1, N);            
     circX = zeros(1, N + 1);      % polygons coordinates
     circY = zeros(1, N + 1);  
-    syms c;                     % tangent variable in ax+by+c=0
     syms sx;    % tangent intersection
     syms sy;    % coordinates
     r1 = [0 0];     
@@ -25,12 +24,12 @@ function  drawSet(rho, N)
         inscX(k) = point(1); % tangent point
         inscY(k) = point(2); % coordinates
         if(k == 1)
-            c2 = solve(r2(1)*inscX(k) + r2(2)*inscY(k) + c, c); 
+            c2 = - r2(1)*inscX(k) - r2(2)*inscY(k); 
             % finding c
         else
             if(k > 1)
             c1 = c2; % c for tangent of previous point
-            c2 = solve(r2(1)*inscX(k) + r2(2)*inscY(k) + c, c); % c for tangent of current point
+            c2 = -r2(1)*inscX(k) - r2(2)*inscY(k); % c for tangent of current point
             % find point of intersection
             [circX(k-1), circY(k-1)] = solve(r1(1)*sx + r1(2)*sy + c1, ...
                                              r2(1)*sx + r2(2)*sy + c2, sx, sy);
@@ -41,7 +40,7 @@ function  drawSet(rho, N)
     r1 = r2;
     r2 = [cos(t(1)) sin(t(1))];
     c1 = c2;
-    c2 = solve(r2(1)*inscX(1) + r2(2)*inscY(1) + c, c);
+    c2 = - r2(1)*inscX(1) - r2(2)*inscY(1);
     eps = 0.0000001;
     if((r1(1)-r2(1)) < eps && (r1(2)-r2(2)) < eps)
         circX(N) = circX(1);
@@ -62,4 +61,6 @@ function  drawSet(rho, N)
     plot(circX, circY, 'b-');
     legend('approximation via inscribed polygons', ...
            'approximation via circumscribed polygons');
+    xlabel('X');
+    ylabel('Y');
 end

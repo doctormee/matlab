@@ -32,6 +32,6 @@ function [ p ] = getEqual( f, g, t0, t1, N )
     p(N, 1) = f(t1);
     p(N, 2) = g(t1);
     disp('Difference: ');
-    dist = norm(sum(abs(p - lin)) ./ N )
+    dist = sum(abs(p - lin)) .
 end
 
