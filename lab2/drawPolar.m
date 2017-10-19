@@ -1,9 +1,4 @@
-function  drawSet(rho, N)
-% function DrawSet gets support function of a set 
-% [val, point] = rho(x), which returns the value of support function and 
-% corresponding vector, and draws piecewise llnear
-% approximation of the border with N points via circumscribed and inscribed
-% polygons
+function  drawPolar(rho, N)
     phi0 = 0;
     phi1 = 2 .* pi;
     N = N + 1; 
@@ -12,6 +7,8 @@ function  drawSet(rho, N)
     inscY = zeros(1, N);            
     circX = zeros(1, N + 1);      % polygons coordinates
     circY = zeros(1, N + 1);  
+    polarX = zeros(1, N);
+    polarY = zeros(1, N);
     sx = 0;    % tangent intersection
     sy = 0;    % coordinates
     r1 = [0 0];     
@@ -21,7 +18,9 @@ function  drawSet(rho, N)
     for k = 1:N    
         r1 = r2;                % saving last directions
         r2 = [cos(t(k)) sin(t(k))]; % current direction
-        [val point] = rho(r2);      % finding support vector for current directio
+        [val, point] = rho(r2);      % finding support vector for current directio
+        polarX(k) = r2(1) ./ val;
+        polarY(k) = r2(2) ./ val;
         inscX(k) = point(1); % tangent point
         inscY(k) = point(2); % coordinates
         if(k == 1)
@@ -67,8 +66,11 @@ function  drawSet(rho, N)
     circY(N + 1) = circY(1);
     % circumscribed poligons
     plot(circX, circY, 'b-');
+    %polar
+    plot(polarX, polarY, 'g-');
     legend('approximation via inscribed polygons', ...
-           'approximation via circumscribed polygons');
+           'approximation via circumscribed polygons', ...
+           'Polar');
     xlabel('X');
     ylabel('Y');
 end

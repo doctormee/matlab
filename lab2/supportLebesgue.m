@@ -6,6 +6,7 @@ function [ ret ] = supportLebesgue( f, opts )
         ceq = [];
         c = f(x);
     end
+    opts = optimoptions('fmincon', 'Display', 'none');
     function [val, point] = rho( dir )
         [point, val] = fmincon(@(x) -dot(dir, x) , ...
             [0, 0] ,[],[],[],[],[],[], @nonlcon , opts);

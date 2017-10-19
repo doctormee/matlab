@@ -18,7 +18,6 @@ function [ p ] = getEqual( f, g, t0, t1, N )
     syms left;
     syms right;
     lineSym(t) = symfun(sqrt(((fSymDer) ^ 2 + (gSymDer) ^ 2)), t);
-
     length(left, right) = int(lineSym, t, left, right);
     part = length(t0, t1) ./ (N - 1);
     left = t0;

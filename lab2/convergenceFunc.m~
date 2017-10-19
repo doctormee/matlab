@@ -10,14 +10,14 @@ function [] = convergenceFunc( fn, f, a, b, n, convType )
     epsilon = .1;
     if (strcmp(convType, 'Point'))
         for i = 1:n
+            axis([a b fmin - epsilon fmax + epsilon]);
+            axis manual;
             plot(x, fn(x, i), x, f(x));
-            grid on;
             info = strcat('Step', ' ', num2str(i));
             title(info);
             legend('fn', 'f');
             xlabel('x');
             ylabel('y');
-            axis([a b fmin - epsilon fmax + epsilon]);
 %             getframe();
             mov(i) = getframe();
         end;
