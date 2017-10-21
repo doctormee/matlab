@@ -21,20 +21,15 @@ function [ p ] = getEqual( f, g, t0, t1, N )
     end
     fVal = f(lsp);
     gVal = g(lsp);
-    fDer = fVal(3:size) - fVal(1:size - 2) ./ (2 .* spacing);
-    gDer = gVal(3:size) - gVal(1:size - 2) ./ (2 .* spacing);
+    fDer = fVal(3:size) - fVal(1:size - 2) ./ (2 .* (lsp(2) - lsp(1)));
+    gDer = gVal(3:size) - gVal(1:size - 2) ./ (2 .* (lsp(2) - lsp(1)));
     dist = sqrt(fDer .^ 2 + gDer .^ 2) .* spacing;
     partVec = cumsum(dist);
-    length = partVec(size - 2) ./ (N - 1);
-    for i = 2:(N - 1)
-        tr = find(partVec > ((i - 1) .* length), 1);
-        p(i, 1) = fVal(tr + 1);
-        p(i, 2) = gVal(tr + 1);
-    end
-    plot(p(:, 1), p(:, 2), '-r', lin(:, 1), lin(:, 2), '-b');
-    xlabel('X');
-    ylabel('Y');
-    legend('getequal', 'linear');
+    length = partVec(N - 2) ./ (N - 2);
+    tr = 1;
+    for i = 2:(N -1)
+        tl = tr;
+        find(X > 
 %     lineSym(t) = symfun(sqrt(((fSymDer) ^ 2 + (gSymDer) ^ 2)), t);
 %     length(left, right) = int(lineSym, t, left, right);
 %     part = length(t0, t1) ./ (N - 1);
@@ -48,7 +43,7 @@ function [ p ] = getEqual( f, g, t0, t1, N )
 %     end
 %     p(N, 1) = f(t1);
 %     p(N, 2) = g(t1);
-    disp('Difference: ');
-    diff = norm(sum(abs(p - lin)) ./ N )
+%     disp('Difference: ');
+%     dist = norm(sum(abs(p - lin)) ./ N )
 end
 
