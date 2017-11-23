@@ -13,7 +13,7 @@ function [ p ] = getEqual( f, g, t0, t1, N )
     linT = linspace(t0, t1, N);
     lin(:, 1) = f(linT);
     lin(:, 2) = g(linT);
-    moe = 1000; %margin of error
+    moe = 500; %margin of error
     size = N  + moe; 
     lsp = linspace(t0, t1, size);
     spacing = lsp(2) - lsp(1);
@@ -22,8 +22,8 @@ function [ p ] = getEqual( f, g, t0, t1, N )
     end
     fVal = f(lsp);
     gVal = g(lsp);
-    fDer = fVal(3:size) - fVal(1:size - 2) ./ (2 .* spacing);
-    gDer = gVal(3:size) - gVal(1:size - 2) ./ (2 .* spacing);
+    fDer = (fVal(3:size) - fVal(1:size - 2)) ./ (2 .* spacing);
+    gDer = (gVal(3:size) - gVal(1:size - 2)) ./ (2 .* spacing);
     dist = sqrt(fDer .^ 2 + gDer .^ 2) .* spacing;
     partVec = cumsum(dist);
     length = partVec(size - 2) ./ (N - 1);
@@ -36,6 +36,8 @@ function [ p ] = getEqual( f, g, t0, t1, N )
     plot(p(:, 1), p(:, 2), '-r', lin(:, 1), lin(:, 2), '-b', f(lsp), g(lsp), '-c');
     xlabel('X');
     ylabel('Y');
+    grid on;
+    axis equal;
     legend('getequal', 'linear', 'function');
     disp('Difference: ');
     diff = norm(sum(abs(p - lin)) ./ N )

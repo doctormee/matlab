@@ -10,6 +10,7 @@ function [ ret ] = supportLebesgue( f, opts )
     function [val, point] = rho( dir )
         [point, val] = fmincon(@(x) -dot(dir, x) , ...
             [0, 0] ,[],[],[],[],[],[], @nonlcon , opts);
+        val = -val;
     end
     ret = @rho;
 end
