@@ -13,4 +13,4 @@ xlabel('x');
 ylabel('y');
 grid on;
 disp(['Difference in L2-norm: ', num2str(trapz(x, (y(1,:) - anSol(x)).^2).^(1/2))]);
-disp(['Difference in C-norm: ', num2str(max(abs((y(1,:) - anSol(x)))))]);
+disp(['Difference in C-norm: ', num2str(max(abs(y(1,:) - anSol(x))))]);
