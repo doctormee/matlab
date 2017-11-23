@@ -23,7 +23,7 @@ v = @(x, y) x.^2 + y.^2;
 
 t0 = 0;
 tf = 10;
-nTrajectories = 20;
+nTrajectories = 50;
 theta = linspace(0, 2*pi, nTrajectories);
 r = 5;
 max = 4;
@@ -88,9 +88,9 @@ clear variables
     
 t0 = 0;
 tf = 10;
-nTrajectories = 20;
+nTrajectories = 50;
 theta = linspace(0, 2*pi, nTrajectories);
-r = 4;
+r = 1;
 max = 10;
 
 %  level lines 
