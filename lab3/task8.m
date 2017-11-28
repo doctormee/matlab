@@ -37,6 +37,42 @@ init = [x0, y0];
 tbegin = 0; %starting time
 tend = 100; %final time
 tspan = [tbegin tend]; %whole timespan
+%% small deviation prey
+clear
+alpha = 10; %prey growth factor
+beta = .1; %predator death factor
+gamma = .5; %prey death factor after meeting predator
+delta = .1; %predator growth factor after killing prey
+x0 = beta ./ delta .* 1.1; %initial population of prey
+y0 = alpha ./ gamma; %initial populaton of predators
+init = [x0, y0];
+tbegin = 0; %starting time
+tend = 100; %final time
+tspan = [tbegin tend]; %whole timespan
+%% small deviation predator
+clear
+alpha = 10; %prey growth factor
+beta = .1; %predator death factor
+gamma = .5; %prey death factor after meeting predator
+delta = .1; %predator growth factor after killing prey
+x0 = beta ./ delta; %initial population of prey
+y0 = alpha ./ gamma .* 1.01; %initial populaton of predators
+init = [x0, y0];
+tbegin = 0; %starting time
+tend = 100; %final time
+tspan = [tbegin tend]; %whole timespan
+%% bigger deviation predator
+clear
+alpha = 10; %prey growth factor
+beta = .1; %predator death factor
+gamma = .5; %prey death factor after meeting predator
+delta = .1; %predator growth factor after killing prey
+x0 = beta ./ delta; %initial population of prey
+y0 = alpha ./ gamma .* 1.5; %initial populaton of predators
+init = [x0, y0];
+tbegin = 0; %starting time
+tend = 100; %final time
+tspan = [tbegin tend]; %whole timespan
 %% leopards and deers
 clear
 alpha = 1; %prey growth factor
@@ -75,11 +111,11 @@ tend = 100; %final time
 tspan = [tbegin tend]; %whole timespan
 %% dying prey
 clear
-alpha = -1; %prey growth factor
+alpha = 0; %prey growth factor
 beta = .1; %predator death factor
 gamma = 1; %prey death factor after meeting predator
 delta = .1; %predator growth factor after killing prey
-x0 = 100; %initial population of prey
+x0 = 1000; %initial population of prey
 y0 = 1; %initial populaton of predators
 init = [x0, y0];
 tbegin = 0; %starting time
@@ -94,6 +130,7 @@ plot(F(:, 1), F(:, 2), 'k');
 grid on;
 xlabel('PREY');
 ylabel('PREDATORS');
+title('Phase Portrait');
 % hold on;
 figure(2);
 plot3(F(:, 1), F(:, 2), T, 'r');
@@ -101,5 +138,6 @@ grid on;
 xlabel('PREY');
 ylabel('PREDATORS');
 zlabel('Time');
+title('Integral Curves');
 
 

@@ -25,7 +25,7 @@ t0 = 0;
 tf = 10;
 nTrajectories = 50;
 theta = linspace(0, 2*pi, nTrajectories);
-r = 5;
+r = 4;
 max = 4;
 
 %  level lines 
@@ -36,7 +36,7 @@ hold on;
 step = .1;
 [X, Y] = meshgrid(-max:step:max, -max:step:max);
 Z = v(X, Y);
-contourN = 10;
+contourN = 15;
 [C, h] = contour(X, Y, Z, contourN);
 colorbar
 list = h.LevelList;
@@ -53,8 +53,10 @@ for i=1:nTrajectories
     piece = length ./ partN;
     for j = 1:(partN)
         curfirst = floor(piece * (j - 1)) + 1;
-        curpar = (curfirst : min(floor(piece * j + 1), length));
-        lVal = v(F(curfirst, 1), F(curfirst, 2));
+        curlast = floor(piece * j + 1);
+        curlast = min(curlast, length);
+        curpar = (curfirst : curlast);
+        lVal = v(F(floor((curfirst + curlast) / 2), 1), F(floor((curfirst + curlast) / 2), 2));
         clear valMaxInd;
         valMaxInd = find( (lVal - list) >= 0);
         if (isempty(valMaxInd))
@@ -64,9 +66,9 @@ for i=1:nTrajectories
         end;
         curcol = colour(floor(((1 ./ contourN) .* (maxInd - 1)) .* 64) + 1, :);
         plot(F(curpar, 1), F(curpar, 2), 'Color', curcol); 
-        U = F(curpar, 2) - F(curpar, 1) + F(curpar, 1) .* F(curpar, 2);
-        V = F(curpar, 1) .* (1 - F(curpar, 1)) - F(curpar, 2) .* (1 - F(curpar, 2) .^ 2);
-        quiver(F(curpar, 1), F(curpar, 2), U, V, 0.5, 'Color', curcol);
+%         U = F(curpar, 2) - F(curpar, 1) + F(curpar, 1) .* F(curpar, 2);
+%         V = F(curpar, 1) .* (1 - F(curpar, 1)) - F(curpar, 2) .* (1 - F(curpar, 2) .^ 2);
+%         quiver(F(curpar, 1), F(curpar, 2), U, V, 0.5, 'Color', curcol);
 
     end
 end;
@@ -118,8 +120,10 @@ for i=1:nTrajectories
     piece = length ./ partN;
     for j = 1:(partN)
         curfirst = floor(piece * (j - 1)) + 1;
-        curpar = (curfirst : ceil((piece * j)));
-        lVal = v(F(curfirst, 1), F(curfirst, 2));
+        curlast = floor(piece * j + 1);
+        curlast = min(curlast, length);
+        curpar = (curfirst : curlast);
+        lVal = v(F(floor((curfirst + curlast) / 2), 1), F(floor((curfirst + curlast) / 2), 2));
         clear valMaxInd;
         valMaxInd = find( (lVal - list) >= 0);
         if (isempty(valMaxInd))

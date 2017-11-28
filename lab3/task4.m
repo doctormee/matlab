@@ -6,6 +6,7 @@ f = @(x) f1(x) - f2(x);
 lsp = -10:0.05:10;
 figure
 plot(lsp, f1(lsp), lsp, f2(lsp));
+hold on;
 grid on;
 [pzero ~] = ginput;
 for i = 1:numel(pzero)
