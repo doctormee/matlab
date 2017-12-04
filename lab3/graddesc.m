@@ -17,7 +17,7 @@ while (norm(grad(x_cur), 2) > moe)
         dot((grad(x_cur) - grad(x_prev)), (grad(x_cur) - grad(x_prev)));
     steps(:, j + 1) = x_cur - lambda .* grad(x_cur);
     j = j + 1;
-    x_cur = steps(:, j)
+    x_cur = steps(:, j);
 end
 min_point = steps(:, j);
 min_val = func(min_point);

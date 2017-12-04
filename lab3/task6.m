@@ -1,11 +1,11 @@
 %% example #1 (k = 2)
 clc
 clear
-f = @(x) cos(x(1)) + sin(x(2));
+f = @(x) cos(x(1)).^ 2 + sin(x(2)).^ 2;
 k = 2;
 n = 200;
-xmin = -5;
-xmax = 12;
+xmin = -2;
+xmax = 3;
 allRoots(f, n, k, xmin, xmax);
 %% example #2 (k = 2)
 clc

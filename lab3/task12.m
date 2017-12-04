@@ -1,10 +1,11 @@
 %%
+clc
 % f = @(x) sin(x(1)) + cos(x(2));
 % fxy = @(x, y) sin(x) + cos(y);
 % grad = @(x) [cos(x(1)); - sin(x(2))];
-f = @(x) x(1).^2 + x(2) .^2;
+f = @(x) (x(1) - 1).^2 + x(2) .^2  + 1;
 fxy = @(x, y) x.^2 + y.^2;
-grad = @(x) [2.*x(1); 2.*x(2)];
+grad = @(x) [2.*x(1) - 2; 2.*x(2)];
 x_left = -pi;
 x_right = pi;
 y_left = -pi;
@@ -14,9 +15,10 @@ x_lsp = linspace(x_left, x_right, size_lsp);
 y_lsp = linspace(y_left, y_right, size_lsp);
 [X, Y] = meshgrid(x_lsp, y_lsp);
 Z = fxy(X, Y);
-x0 = [0; 0];
+x0 = [0; 1];
 [val, point, steps] = graddesc(f, grad, x0);
 values = fxy(steps(1, :), steps(2, :));
+figure;
 surf(X, Y, Z);
 figure;
 contour(X, Y, Z, values, 'ShowText', 'on');
@@ -25,4 +27,5 @@ plot(steps(1, :), steps(2, :), '*r');
 plot(point(1), point(2), '*b');
 legend('Contour plots', 'Points from gradient descend', 'Final point');
 [fmin_x fmin_val] = fminsearch(f, x0);
+hold off;
 disp(['Value error = ' num2str(abs(val - fmin_val))]);
