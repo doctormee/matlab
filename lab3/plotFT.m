@@ -2,11 +2,11 @@ function [ res ] = plotFT( hFigure, fHandle, fFTHandle, step, inpLimVec, outLimV
     res = struct('nPoints', [], 'Step', []);
     res.inpLimVec = inpLimVec;
     
-    moe = .0001;
+    moe = .001;
     a = inpLimVec(1);
     b = inpLimVec(2);
-    n = floor((b - a) ./ step);
-    step = (b - a) ./ (n);
+    n = floor((b - a) ./ step) + 1;
+    step = (b - a) ./ (n - 1);
     res.nPoints = n;
     res.Step = step;
     
@@ -15,11 +15,11 @@ function [ res ] = plotFT( hFigure, fHandle, fFTHandle, step, inpLimVec, outLimV
     func = fHandle(lsp);
     
     fourier = step .* fftshift(fft(func));
-    
+    %fourier(isnan(fourier)) = 0; %0/0 values have to be subsituted with limit
     lsp = linspace(0, 2 * pi ./ step, n);
     
-    lsp = lsp - lsp(ceil(n ./ 2));  %symmetrical partition
-    fourier = fourier .* exp(-1i.*lsp.*a); %shifting the fourier transform
+    lsp = lsp - lsp(floor(n ./ 2 + 1));  %symmetrical partition
+    fourier = fourier .* exp(-1i.*lsp.*a) ; %shifting the fourier transform
     
     SPlotInfo = get(hFigure, 'UserData');
     
