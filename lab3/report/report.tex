@@ -1,12 +1,12 @@
-\documentclass[11pt, oneside, draft]{article}
-\usepackage[utf8]{inputenc}
-\usepackage{a4wide}
-\usepackage[russian]{babel}
-\usepackage{graphicx}
-\usepackage{epstopdf}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
+\documentclass[11pt, oneside, final]{article} \sloppy 
+\usepackage[utf8]{inputenc} 
+\usepackage{a4wide} 
+\usepackage[russian]{babel} 
+\usepackage{graphicx} 
+\usepackage{epstopdf} 
+\usepackage{amsmath} 
+\usepackage{amsfonts} 
+\usepackage{amssymb} 
 \usepackage{amsthm}
 
 %\newtheoremstyle{mytheorem}% name of the style to be used
@@ -19,279 +19,248 @@
 %  { }% space after theorem head; " " = normal interword space
 %  {}% Manually specify head
 %\theoremstyle{mytheorem}
-\numberwithin{equation}{section}
-\newtheorem{definition}{Определение}[section]
-\newtheorem{theorem}{Теорема}[section]
-\newtheorem{property}{Свойство}[section]
-\newtheorem{corollary}{Следствие}[theorem]
-\newtheorem{lemma}[theorem]{Лемма}
-\newtheorem*{statement}{Утверждение}
-\renewenvironment{proof}{\noindent\textit{Доказательство: }} {\qed}
+\numberwithin{equation}{section} 
+\newtheorem{definition}{Определение}[section] 
+\newtheorem{theorem}{Теорема}[section] 
+\newtheorem{property}{Свойство}[section] 
+\newtheorem{corollary}{Следствие}[theorem] 
+\newtheorem{lemma}[theorem]{Лемма} 
+\newtheorem*{statement}{Утверждение} 
+\renewenvironment{proof}{
+\noindent\textit{Доказательство: }} {\qed}
 
 %commands
-\newcommand \bitem[1][]{\item \textbf{#1}}
-\newcommand \four[1][\lambda]{\mathfrak{F}(#1)}
-\newcommand \fft[1][\lambda]{F(#1)}
-\newcommand \rarrow{\rightarrow}
-\newcommand \intinf[1][{\,dt}]{ \int\limits_{-\infty}^{+\infty}{{#1}}}
+\newcommand \bitem[1][]{
+\item \textbf{#1}} 
+\newcommand \four[1][\lambda]{\mathfrak{F}(#1)} 
+\newcommand \fft[1][\lambda]{F(#1)} 
+\newcommand \rarrow{\rightarrow} 
+\newcommand \intinf[1][{\,dt}]{ \int\limits_{-\infty}^{+\infty}{{#1}}} 
 \renewcommand \qed{$\blacksquare$}
 
 \DeclareMathOperator{\sgn}{sgn}
 
 \begin{document}
+
 %Title
 \thispagestyle{empty}
-
 \begin{center}
-\ \vspace{-3cm}
-
-\includegraphics[width=0.5\textwidth]{msu}\\
-{\scshape Московский государственный университет имени М.~В.~Ломоносова}\\
-Факультет вычислительной математики и кибернетики\\
-Кафедра системного анализа
-
-\vfill
-
-{\LARGE Отчёт по практикуму}
-
-\vspace{1cm}
-
-{\Huge\bfseries "<Быстрое преобразование Фурье">}
+    \ \vspace{-3cm}
+    
+    \includegraphics[width=0.5
+    \textwidth]{msu}\\
+    {\scshape Московский государственный университет имени М.~В.~Ломоносова}\\
+    Факультет вычислительной математики и кибернетики\\
+    Кафедра системного анализа
+    
+    \vfill
+    
+    {\LARGE Отчёт по практикуму}
+    
+    \vspace{1cm}
+    
+    {\Huge\bfseries "<Быстрое преобразование Фурье">} 
 \end{center}
 
 \vspace{1cm}
-
 \begin{flushright}
-  \large
-  \textit{Студент 315 группы}\\
-  В.\,А.~Сливинский
-
-  \vspace{5mm}
-
-  \textit{Руководители практикума}\\
- 	к.ф.-м.н., доцент И.\,В.~Рублёв \\
-    	к.ф.-м.н., доцент П.\,А.~Точилин
+    \large \textit{Студент 315 группы}\\
+    В.\,А.~Сливинский
+    
+    \vspace{5mm}
+    
+    \textit{Руководители практикума}\\
+    к.ф.-м.н., доцент И.\,В.~Рублёв \\
+    к.ф.-м.н., доцент П.\,А.~Точилин 
 \end{flushright}
 
 \vfill
-
 \begin{center}
-Москва, 2017
+    Москва, 2017 
 \end{center}
 \pagebreak
+
 %Contents
 \tableofcontents
 
 \pagebreak
+
 %Task
+
+
 \section{Постановка~задачи}
-\subsection{Общая~формулировка~задачи}
-Дана система функций (всюду далее, если не сказано противное, предполагается, что \(f(t) : \mathbb{R} \rightarrow \mathbb{R} \) и функция суммируема и обладает достаточной гладкостью) 
-\begin{equation}\label{functions}
-\left\{
-\begin{aligned}  
-	f_1(t) &= e^{-2|t|} \cos(t) \\
-	f_2(t) &= \dfrac{e^{-|t|} - 1}{t} \\
-	f_3(t) &= \dfrac{\arctg{t^2}}{1 + t^4} \\
-	f_4(t) &= t^3e^{-t^4}
-\end{aligned}
-\right.
+
+\subsection{Общая~формулировка~задачи} Дана система функций (всюду далее, если не сказано противное, предполагается, что \(f(t) : \mathbb{R} \rightarrow \mathbb{R} \) и функция суммируема и обладает достаточной гладкостью) 
+\begin{equation}\label{functions} 
+    \left\{ 
+    \begin{aligned}
+        f_1(t) &= e^{-2|t|} \cos(t) \\
+        f_2(t) &= \dfrac{e^{-|t|} - 1}{t} \\
+        f_3(t) &= \dfrac{\arctg{t^2}}{1 + t^4} \\
+        f_4(t) &= t^3e^{-t^4} 
+    \end{aligned}
+    \right. 
 \end{equation}
 Для каждой функции из системы \eqref{functions} требуется:
-
 \begin{enumerate}
-	\item Получить аппроксимацию преобразования Фурье  \( F(\lambda)\) для каждой функции \(f(t)\) из заданного набора при помощи быстрого преобразования Фурье ({\bfseries БПФ / FFT}), выбирая различные шаги 
-дискретизации исходной функции и различные окна, ограничивающие область определения \(f(t)\)
-	\item Построить графики \(F(\lambda)\)
-	\item Для функций \(f_1(t)\) и \(f_2(t)\) из заданного набора вычислить аналитически преобразование Фурье 
-	\begin{equation}
-	\label{fourier_transform} 
-	\boxed{\four = \intinf[{f(t) e^{-i\lambda t}\, dt}]}
-	\end{equation}
-	и сравнить графики  \( \four \) с графиками  \( F(\lambda)\), полученного из аппроксимации через {\bfseries БПФ}\\
+    \item Получить аппроксимацию преобразования Фурье \( F(\lambda)\) для каждой функции \(f(t)\) из заданного набора при помощи быстрого преобразования Фурье ({\bfseries БПФ / FFT}), выбирая различные шаги дискретизации исходной функции и различные окна, ограничивающие область определения \(f(t)\) 
+    \item Построить графики \(F(\lambda)\) 
+    \item Для функций \(f_1(t)\) и \(f_2(t)\) из заданного набора вычислить аналитически преобразование Фурье 
+    \begin{equation}\label{fourier_transform} 
+        \boxed{\four = \intinf[{f(t) e^{-i\lambda t}\, dt}]} 
+    \end{equation}
+    и сравнить графики \( \four \) с графиками \( F(\lambda)\), полученного из аппроксимации через {\bfseries БПФ}\\
 \end{enumerate}
+
 %Formal task
-\subsection{Формальная~постановка~задачи}
+
+\subsection{Формальная~постановка~задачи} 
 \begin{enumerate}
-	\item Реализовать на языке MATLAB функцию \\\texttt{plotFT(hFigure,~fHandle,~fFTHandle,~step,~inpLimVec,~outLimVec)} \\со следующими параметрами:
-	\begin{itemize}
-		\bitem[hFigure] ~--- указатель на фигуру, в которой требуется отобразить графики
-		\bitem[fHandle] ~--- указатель на функцию (\texttt{Function Handle}), которую требуется преобразовывать (\(f(t)\))
-		\bitem[fFTHandle] ~--- указатель на функцию (\texttt{Function Handle}), моделирующую аналитическое преобразование Фурье \eqref{fourier_transform} функции \(f(t)\) 
-		(может быть пустым вектором, в таком случае график аналитического преобразования строить не требуется)
-		\bitem[step] ~--- положительное число, задающее шаг дискретизации \(\Delta t\)
-		\bitem[inpLimVector] ~--- вектор-строка, задающая окно \([a, b]\) для функции \(f(t)\), первый элемент вектора содержит \(a\), второй \(b\), причём~\(a < b\), но не обязательно \(a = -b\)
-		\bitem[outLimVector] ~--- вектор-строка, задающая окно \([c, d]\) \textit{для вывода} графика преобразования Фурье (пределы~осей~абсцисс). 
-		В случае, если передаётся пустой вектор, следует брать установленные в фигуре пределы или определять свои разумным образом
-	\end{itemize}
-	Данная функция строит графики вещественной и мнимой частей численной аппроксимации преобразования Фурье (\ref{fourier_transform}) функции \(f(t)\), заданной в \textbf{\texttt{fHandle}}
-	 (и, при необходимости, соответствующие графики~аналитического~преобразования~Фурье~\(\four\)) \\
-	 Кроме того, данная функция, должна возвращать структуру, содержащую следующие параметры: 
-	\begin{itemize}
-		\bitem[nPoints] ~--- число вычисляемых узлов сеточной функции, рассчитываемое по формуле: 
-		\[ nPoints = \Bigl\lfloor {\dfrac{(b - a)}{step}}\Bigr\rfloor \]
-		\bitem[step] ~--- поправленное значение шага дискретизации \(\Delta t\), рассчитываемое по формуле: \[step= \dfrac{(b - a)}{nPoints}\]
-		\bitem[inpLimVec] ~---  окно \([a, b]\) для функции \(f(t)\)
-		\bitem[outLimVec] ~--- окно для вывода графика преобразования Фурье \(\fft\)
-	\end{itemize}
-	\item Построить, используя написанную функцию \texttt{plotFT}, для каждой из функций системы \eqref{functions} графики \(\fft\) для разных значений входных параметров \\*
-	(окон \textbf{inpLimVec, outLimVec} и частоты дискретизации \textbf{step}. \\В частности, для некоторых функций подобрать параметры так, чтобы проиллюстрировать
-	эффекты \textit{наложения спектра, появления~ряби и их устранения} (в случае ряби~--- в точках непрерывности \(\fft\))
-	\item Для функций \(f_1(t)\) и \(f_2(t)\) из системы \eqref{functions} вычислить аналитически их преобразования Фурье \(\four\) и построить их графики вместе с графиками численной
-	аппроксимации \(\fft\)
+    \item Реализовать на языке MATLAB функцию \\\texttt{plotFT(hFigure,~fHandle,~fFTHandle,~step,~inpLimVec,~outLimVec)} \\со следующими параметрами: 
+    \begin{itemize}
+        \bitem[hFigure] ~--- указатель на фигуру, в которой требуется отобразить графики \bitem[fHandle] ~--- указатель на функцию (\texttt{Function Handle}), которую требуется преобразовывать (\(f(t)\)) \bitem[fFTHandle] ~--- указатель на функцию (\texttt{Function Handle}), моделирующую аналитическое преобразование Фурье \eqref{fourier_transform} функции \(f(t)\) (может быть пустым вектором, в таком случае график аналитического преобразования строить не требуется) \bitem[step] ~--- положительное число, задающее шаг дискретизации \(\Delta t\) \bitem[inpLimVector] ~--- вектор-строка, задающая окно \([a, b]\) для функции \(f(t)\), первый элемент вектора содержит \(a\), второй \(b\), причём~\(a < b\), но не обязательно \(a = -b\) \bitem[outLimVector] ~--- вектор-строка, задающая окно \([c, d]\) \textit{для вывода} графика преобразования Фурье (пределы~осей~абсцисс). В случае, если передаётся пустой вектор, следует брать установленные в фигуре пределы или определять свои разумным образом 
+    \end{itemize}
+    Данная функция строит графики вещественной и мнимой частей численной аппроксимации преобразования Фурье (\ref{fourier_transform}) функции \(f(t)\), заданной в \textbf{\texttt{fHandle}} (и, при необходимости, соответствующие графики~аналитического~преобразования~Фурье~\(\four\)) \\
+    Кроме того, данная функция, должна возвращать структуру, содержащую следующие параметры: 
+    \begin{itemize}
+        \bitem[nPoints] ~--- число вычисляемых узлов сеточной функции, рассчитываемое по формуле:
+        \[ nPoints = \Bigl\lfloor {\dfrac{(b - a)}{step}}\Bigr\rfloor \]
+        \bitem[step] ~--- поправленное значение шага дискретизации \(\Delta t\), рассчитываемое по формуле:
+        \[step= \dfrac{(b - a)}{nPoints}\]
+        \bitem[inpLimVec] ~--- окно \([a, b]\) для функции \(f(t)\) \bitem[outLimVec] ~--- окно для вывода графика преобразования Фурье \(\fft\) 
+    \end{itemize}
+    \item Построить, используя написанную функцию \texttt{plotFT}, для каждой из функций системы \eqref{functions} графики \(\fft\) для разных значений входных параметров (окон \textbf{inpLimVec, outLimVec} и частоты дискретизации \textbf{step}). \\В частности, для некоторых функций подобрать параметры так, чтобы проиллюстрировать эффекты \textit{наложения спектра, появления~ряби и их устранения} (в случае ряби~--- в точках непрерывности \(\fft\)) 
+    \item Для функций \(f_1(t)\) и \(f_2(t)\) из системы \eqref{functions} вычислить аналитически их преобразования Фурье \(\four\) и построить их графики вместе с графиками численной аппроксимации \(\fft\) 
 \end{enumerate}
 
 %fourier
+
+
 \section{Вычисление~аналитических~преобразований~Фурье}
 
-	\subsection{Некоторые~необходимые~обозначения~и~соотношения}
-		Напомним, что преобразование Фурье \( \four \) функции \(f(t)\) задаётся формулой \eqref{fourier_transform}:
-			\begin{align*} 
-				\four = \intinf[ {f(t) e^{-i\lambda t}\, dt}]
-			\end{align*}
-		Впредь, будем для краткости писать: 
-		\[
-			\boxed{ f(t)\rarrow\four}
-		\]
-		
-		
-		{
-		Напомним также следующие свойства преобразования Фурье:
-		
-		\begin{property}\label{property:linear}
-		\mdseriesПусть  \begin{gather*} f(t) = \alpha \cdot f_1(t) + \beta \cdot f_2(t) \text{ , и }
-		\left\{
-            	 \begin{aligned}
-            		f_1(t) &\rarrow \mathfrak{F_1}(\lambda) \\
-            		f_2(t) &\rarrow \mathfrak{F_2}(\lambda)
-            	\end{aligned}
-		\right.
-		\end{gather*} \\
-		Тогда: \[
-		 f(t) \rarrow  \alpha \cdot \mathfrak{F_1}(\lambda) + \beta \cdot  \mathfrak{F_2}(\lambda)  
-		 \]
-		\end{property}
-		\begin{property}\label{property:product}
-		\mdseriesПусть  \begin{gather*} f(t) = f_1(t) \cdot f_2(t) \text{ , и }
-		\left\{
-            	 \begin{aligned}
-            		f_1(t) &\rarrow \mathfrak{F_1}(\lambda) \\
-            		f_2(t) &\rarrow \mathfrak{F_2}(\lambda)
-            	\end{aligned}
-		\right.
-		\end{gather*}\\
-		Тогда: \[
-		2\pi f_1(t) \cdot f_2(t) \rarrow  (\mathfrak{F_1 * F_2)}(\lambda) \text{ , где }(\mathfrak{F_1 * F_2})(\lambda) = \intinf[{\bigl[\mathfrak{F_1}(\lambda - s) \cdot \mathfrak{F_2}(s)\bigr] \, ds}]
-		 \]
-		\end{property}
-		}
-		
-		
-		{
-		Отметим некоторые тривиальные преобразования Фурье:
-		\begin{flalign}
-		\label{fourier:delta}\delta(\lambda) &\rarrow 1 \\
-		\label{fourier:1} 1 &\rarrow 2\pi\delta(\lambda) \\
-		\label{fourier:exp} e^{iat} &\rarrow 2\pi\delta(\lambda - a) \\
-		\label{fourier:cos} \cos(t) = \frac{e^{it} + e^{-it}}{2} & \rarrow \pi(\delta(\lambda - 1) + \delta(\lambda + 1)) \\
-		\label{fourier:1/t} \dfrac{1}{t} &\rarrow -i \pi \sgn(t)
-		\end{flalign}
-		Где \( \delta(t) =
-            				 \begin{cases}
-		 			+\infty,& t = 0 \\
-					0,& t \not= 0
-            				\end{cases} 
-					\)~--- дельта-функция Дирака,
-		а соотношение \eqref{fourier:cos} вытекает из свойства~\ref{property:linear}, с учётом \eqref{fourier:exp}. 
-		}
-		
-		%delta
-		{
-		Установим также важное отношения для свёртки дельта-функции с произвольной функцией \(\varphi(t)\):
-		\begin{align}
-		\label{delta:conv}\boxed{\left(\delta * \varphi \right) (s) = \intinf[{\delta(s - \tau) \cdot \varphi(\tau)\, d\tau} = \varphi(s)]}
-		\end{align}
-		}
-		
-		\noindent Докажем следующее соотношение:
-		\begin{lemma}
-		\begin{equation}\label{fourier:exp_abs}
-		e^{-A|t|} \rarrow \dfrac{2A}{A^2 + \lambda^2}
-		\end{equation}
-		\end{lemma}
-		\begin{proof}
-		\[
-		\begin{split} 
-			\intinf[{e^{-A|t|} \cdot e^{-i\lambda t} \, dt}] &= \int\limits_{-\infty}^0{e^{(A - i\lambda) t} \, dt} +  \int\limits_0^{+\infty}{e^{-(A + i\lambda) t} \, dt} = \\
-			&= \left[ e^{(A - i\lambda)t} \cdot \frac{1}{A - i\lambda} \right]_{t = -\infty}^{0} 
-			- \left[ e^{-(A + i\lambda)t} \cdot \frac{1}{A + i\lambda} \right]_{t = 0}^{+\infty} = \\ 
-			&=\frac{1}{A - i\lambda} + \frac{1}{A + i\lambda} = \frac{2A}{A^2 + \lambda^2}
-		\end{split}
-		\]
-		\end{proof}
+\subsection{Некоторые~необходимые~обозначения~и~соотношения} Напомним, что преобразование Фурье \( \four \) функции \(f(t)\) задаётся формулой \eqref{fourier_transform}: 
+\begin{align*}
+    \four = \intinf[ {f(t) e^{-i\lambda t}\, dt}] 
+\end{align*}
+Впредь, будем для краткости писать:
+\[ \boxed{ f(t)\rarrow\four} \]
+
+{ Напомним также следующие свойства преобразования Фурье:
+\begin{property}\label{property:linear} 
+    \mdseriesПусть 
+    \begin{gather*}
+        f(t) = \alpha \cdot f_1(t) + \beta \cdot f_2(t) \text{ , и } \left\{ 
+        \begin{aligned}
+            f_1(t) &\rarrow \mathfrak{F_1}(\lambda) \\
+            f_2(t) &\rarrow \mathfrak{F_2}(\lambda) 
+        \end{aligned}
+        \right. 
+    \end{gather*}
+    \\
+    Тогда:
+    \[ f(t) \rarrow \alpha \cdot \mathfrak{F_1}(\lambda) + \beta \cdot \mathfrak{F_2}(\lambda) \]
+\end{property}
+\begin{property}\label{property:product} 
+    \mdseriesПусть 
+    \begin{gather*}
+        f(t) = f_1(t) \cdot f_2(t) \text{ , и } \left\{ 
+        \begin{aligned}
+            f_1(t) &\rarrow \mathfrak{F_1}(\lambda) \\
+            f_2(t) &\rarrow \mathfrak{F_2}(\lambda) 
+        \end{aligned}
+        \right. 
+    \end{gather*}
+    \\
+    Тогда:
+    \[ 2\pi f_1(t) \cdot f_2(t) \rarrow (\mathfrak{F_1 * F_2)}(\lambda) \text{ , где }(\mathfrak{F_1 * F_2})(\lambda) = \intinf[{\bigl[\mathfrak{F_1}(\lambda - s) \cdot \mathfrak{F_2}(s)\bigr] \, ds}] \]
+\end{property}
+}
+
+{ Отметим некоторые тривиальные преобразования Фурье: 
+\begin{flalign}\label{fourier:delta}
+    \delta(\lambda) &\rarrow 1 \\
+    \label{fourier:1} 1 &\rarrow 2\pi\delta(\lambda) \\
+    \label{fourier:exp} e^{iat} &\rarrow 2\pi\delta(\lambda - a) \\
+    \label{fourier:cos} \cos(t) = \frac{e^{it} + e^{-it}}{2} & \rarrow \pi(\delta(\lambda - 1) + \delta(\lambda + 1)) \\
+    \label{fourier:1/t} \dfrac{1}{t} &\rarrow -i \pi \sgn(t) 
+\end{flalign}
+Где \( \delta(t) = 
+\begin{cases}
+    +\infty,& t = 0 \\
+    0,& t \not= 0 
+\end{cases}
+\)~--- дельта-функция Дирака, а соотношение \eqref{fourier:cos} вытекает из свойства~\ref{property:linear}, с учётом \eqref{fourier:exp}. }
+
+%delta
+{ Установим также важное отношения для свёртки дельта-функции с произвольной функцией \(\varphi(t)\): 
+\begin{align}\label{delta:conv}
+    \boxed{\left(\delta * \varphi \right) (s) = \intinf[{\delta(s - \tau) \cdot \varphi(\tau)\, d\tau} = \varphi(s)]} 
+\end{align}
+}
+
+\noindent Докажем следующее соотношение: 
+\begin{lemma}
+    \begin{equation}\label{fourier:exp_abs} 
+        e^{-A|t|} \rarrow \dfrac{2A}{A^2 + \lambda^2} 
+    \end{equation}
+\end{lemma}
+\begin{proof}
+    \[ 
+    \begin{split}
+        \intinf[{e^{-A|t|} \cdot e^{-i\lambda t} \, dt}] &= \int\limits_{-\infty}^0{e^{(A - i\lambda) t} \, dt} + \int\limits_0^{+\infty}{e^{-(A + i\lambda) t} \, dt} = \\
+        &= \left[ e^{(A - i\lambda)t} \cdot \frac{1}{A - i\lambda} \right]_{t = -\infty}^{0} - \left[ e^{-(A + i\lambda)t} \cdot \frac{1}{A + i\lambda} \right]_{t = 0}^{+\infty} = \\
+        &=\frac{1}{A - i\lambda} + \frac{1}{A + i\lambda} = \frac{2A}{A^2 + \lambda^2} 
+    \end{split}
+    \]
+\end{proof}
+
 %Fourier 1
+
 \subsection{Вычисление~аналитического~преобразования~Фурье\\функции~\(f_1(t) = e^{-2|t|} \cos(t)\)}
 
-	Преобразование Фурье \( \mathfrak{F_1} (\lambda)\) функции \(f_1(t) = e^{-2|t|} \cos(t) \) задаётся формулой:
-	\[
-		\mathfrak{F_1} (\lambda) = \intinf[{e^{-2|t|} \cos(t) e^{-i\lambda t}\, dt}]
-	\]
-	
-	\begin{statement}
-	\begin{equation}\label{fourier_transform:f1}
-	\boxed{
-		\mathfrak{F_1}(\lambda) =  \dfrac{4(\lambda^2 + 5)}{\lambda^4 + 6\lambda^2 + 25}
-	}
-	\end{equation}
-	\end{statement}
-	
-	\begin{proof}
-	Заметим, что \(f_1(t) \) представима в виде: 
-	\begin{equation}\label{factor:f1}
-	f_1(t) = g_1(t) \cdot g_2(t) \text{, где }g_1(t) = e^{-2|t|},\,g_2(t) = \cos(t)
-	\end{equation}
-	Пользуясь этим соотношением, выражениями для преобразований Фурье \(g_1(t)\) \eqref{fourier:exp_abs} и \(g_2(t)\) \eqref{fourier:cos}, установленным свойством \ref{property:product}
-	 и соотношением \eqref{delta:conv} для свёртки с дельта-функцией, получим: 
-	 \[
-	 \begin{split}
-		 \mathfrak{F_1} (\lambda) &= \dfrac{1}{2\pi} \intinf[{\dfrac{4}{4 + \tau^2} \cdot \pi(\delta(\lambda - \tau- 1) + \delta(\lambda + 1 - \tau))\,d\tau}] = \\
-		 &=\dfrac{2}{4 + (\lambda - 1)^2} + \dfrac{2}{4 + (\lambda + 1)^2} 
-		= \dfrac{4(\lambda^2 + 5)}{\lambda^4 + 6\lambda^2 + 25}
-	\end{split}
-	\]
-	\end{proof}
-	
-%Fourier 2
-\subsection{Вычисление~аналитического~преобразования~Фурье\\функции~\(f_2(t) = \frac{e^{-|t|} - 1}{t} \)}
-Преобразование Фурье \( \mathfrak{F_2} (\lambda)\) функции \(f_2(t) = \frac{e^{-|t|} - 1}{t} \) задаётся формулой:
-	\[
-		\mathfrak{F_2} (\lambda) = \intinf[{\dfrac{e^{-|t|} - 1}{t} e^{-i\lambda t}\, dt}]
-	\]
+Преобразование Фурье \( \mathfrak{F_1} (\lambda)\) функции \(f_1(t) = e^{-2|t|} \cos(t) \) задаётся формулой:
+\[ \mathfrak{F_1} (\lambda) = \intinf[{e^{-2|t|} \cos(t) e^{-i\lambda t}\, dt}] \]
+\begin{statement}
+    \begin{equation}\label{fourier_transform:f1} 
+        \boxed{ \mathfrak{F_1}(\lambda) = \dfrac{4(\lambda^2 + 5)}{\lambda^4 + 6\lambda^2 + 25} } 
+    \end{equation}
+\end{statement}
+\begin{proof}
+    Заметим, что \(f_1(t) \) представима в виде: 
+    \begin{equation}\label{factor:f1} 
+        f_1(t) = g_1(t) \cdot g_2(t) \text{, где }g_1(t) = e^{-2|t|},\,g_2(t) = \cos(t) 
+    \end{equation}
+    Пользуясь этим соотношением, выражениями для преобразований Фурье \(g_1(t)\) \eqref{fourier:exp_abs} и \(g_2(t)\) \eqref{fourier:cos}, установленным свойством \ref{property:product} и соотношением \eqref{delta:conv} для свёртки с дельта-функцией, получим:
+    \[ 
+    \begin{split}
+        \mathfrak{F_1} (\lambda) &= \dfrac{1}{2\pi} \intinf[{\dfrac{4}{4 + \tau^2} \cdot \pi(\delta(\lambda - \tau- 1) + \delta(\lambda + 1 - \tau))\,d\tau}] = \\
+        &=\dfrac{2}{4 + (\lambda - 1)^2} + \dfrac{2}{4 + (\lambda + 1)^2} = \dfrac{4(\lambda^2 + 5)}{\lambda^4 + 6\lambda^2 + 25} 
+    \end{split}
+    \]
+\end{proof}
 
-	\begin{statement}
-	\begin{equation}\label{fourier_transform:f2}
-	\boxed{
-		\mathfrak{F_2}(\lambda) =  i\left(\pi\sgn(\lambda) - 2\arctg(\lambda)\right)
-	}
-	\end{equation}
-	\end{statement}
-	\begin{proof}
-	Аналогично \eqref{factor:f1} представим \(f_2(t) \) в виде: 
-	\begin{equation}\label{factor:f2}
-	f_2(t) = g_1(t) \cdot g_2(t) \text{ где } g_1(t) = \left(e^{-|t|} - 1\right)\text{, }g_2(t) = \dfrac{1}{t}
-	\end{equation}
-	Пользуясь установленными свойствами~\ref{property:linear},~\ref{property:product}, выражениями для преобразований Фурье~\(g_1(t)\) \eqref{fourier:exp_abs},~\eqref{fourier:1} и~\(g_2(t)\)~\eqref{fourier:1/t}
-	и соотношением~\eqref{delta:conv} для свёртки с дельта-функцией, получим: 
-	\[
-	\begin{split}
-		f_2(t) \rarrow \mathfrak{F_2} (\lambda) &= \intinf[{ \dfrac{e^{-|t|} - 1}{t} e^{-i\lambda t}\, dt}] = \dfrac{1}{\pi}\left[\left({\dfrac{1}{1 + (\cdot)^2} - \pi\delta(\cdot)}\right) * \left({-i \pi \sgn(\cdot)}\right)\right]
-		\negmedspace({\lambda}) = \\ 
-		&= -i\int\limits_{\lambda}^{+\infty}{\dfrac{1}{1 + \tau^2}\, d\tau} + i\int\limits_{-\infty}^{\lambda}{\dfrac{1}{1 + \tau^2}\, d\tau} + \pi i \sgn(\lambda) = \\
-		&= i\left(\pi \sgn(\lambda) + 2\arctg(\lambda)\right)
-	\end{split}
-	\]
-	\end{proof}
+%Fourier 2
+
+\subsection{Вычисление~аналитического~преобразования~Фурье\\функции~\(f_2(t) = \frac{e^{-|t|} - 1}{t} \)} Преобразование Фурье \( \mathfrak{F_2} (\lambda)\) функции \(f_2(t) = \frac{e^{-|t|} - 1}{t} \) задаётся формулой:
+\[ \mathfrak{F_2} (\lambda) = \intinf[{\dfrac{e^{-|t|} - 1}{t} e^{-i\lambda t}\, dt}] \]
+\begin{statement}
+    \begin{equation}\label{fourier_transform:f2} 
+        \boxed{ \mathfrak{F_2}(\lambda) = i\left(\pi\sgn(\lambda) - 2\arctg(\lambda)\right) } 
+    \end{equation}
+\end{statement}
+\begin{proof}
+    Аналогично \eqref{factor:f1} представим \(f_2(t) \) в виде: 
+    \begin{equation}\label{factor:f2} 
+        f_2(t) = g_1(t) \cdot g_2(t) \text{ где } g_1(t) = \left(e^{-|t|} - 1\right)\text{, }g_2(t) = \dfrac{1}{t} 
+    \end{equation}
+    Пользуясь установленными свойствами~\ref{property:linear},~\ref{property:product}, выражениями для преобразований Фурье~\(g_1(t)\) \eqref{fourier:exp_abs},~\eqref{fourier:1} и~\(g_2(t)\)~\eqref{fourier:1/t} и соотношением~\eqref{delta:conv} для свёртки с дельта-функцией, получим:
+    \[ 
+    \begin{split}
+        f_2(t) \rarrow \mathfrak{F_2} (\lambda) &= \intinf[{ \dfrac{e^{-|t|} - 1}{t} e^{-i\lambda t}\, dt}] = \dfrac{1}{\pi}\left[\left({\dfrac{1}{1 + (\cdot)^2} - \pi\delta(\cdot)}\right) * \left({-i \pi \sgn(\cdot)}\right)\right] \negmedspace({\lambda}) = \\
+        &= -i\int\limits_{\lambda}^{+\infty}{\dfrac{1}{1 + \tau^2}\, d\tau} + i\int\limits_{-\infty}^{\lambda}{\dfrac{1}{1 + \tau^2}\, d\tau} + \pi i \sgn(\lambda) = \\
+        &= i\left(\pi \sgn(\lambda) + 2\arctg(\lambda)\right) 
+    \end{split}
+    \]
+\end{proof}
 
 \end{document}
-
-
