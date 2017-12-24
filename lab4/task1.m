@@ -1,9 +1,9 @@
 clear;
-u1Zero = 10;
+u1Zero = -1;
 u2Zero = 1;
 M = 100;
 N = 100;
-mju = 4;
+mju = 2;
 x = linspace(0, 1, M);
 xStep = 1 ./ M;
 y = linspace(0, 1, N);
