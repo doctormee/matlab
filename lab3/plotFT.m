@@ -15,7 +15,6 @@ function [ res ] = plotFT( hFigure, fHandle, fFTHandle, step, inpLimVec, outLimV
     func = fHandle(lsp);
     
     fourier = step .* fftshift(fft(func));
-    %fourier(isnan(fourier)) = 0; %0/0 values have to be subsituted with limit
     lsp = linspace(0, 2 * pi ./ step, n);
     
     lsp = lsp - lsp(floor(n ./ 2 + 1));  %symmetrical partition
