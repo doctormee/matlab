@@ -51,16 +51,19 @@ function [ res ] = solveDirichlet( fHandle, xiHandle, etaHandle, mju, M, N )
     A22 = A22 + reshape(extVec(ind), size(ind));
     
     A = [A11, A12; A21, A22];
+    %now we have to find the right-side of the linear system
     yZero = [xiHandle(x), etaHandle(y(2:end))].';
     Phi0Theta = ifft2(Phi0 .* Theta);
     Phi0Theta = [Phi0Theta(:, 1); Phi0Theta(1, 2:end).'];
     B = yZero - Phi0Theta;
+    %solving the system
     phi0 = linsolve(A, B);
+    %updating our phi-matrix
     phi(:, 1) = phi0(1:M);
     phi(1, 2:end) = phi0(M + 1: end).';
-    
+    %new Phi
     Phi = fft2(phi);
-    
+    %and the Answer, finally
     res = ifft2(Phi .* Theta);
 end
 
