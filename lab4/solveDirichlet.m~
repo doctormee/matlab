@@ -16,6 +16,47 @@ function [ res ] = solveDirichlet( fHandle, xiHandle, etaHandle, mu, M, N )
     %here we try to find phi(0, i), phi (i, 0) and phi(0, 0) via solving a
     %SLAE:
     %this would be useful later on:
-    indices = repmat([1:M], 
+    indicesM = repmat([1:M], M, 1);
+    indicesM = abs(indicesM - indicesM.') + 1;
+    
+    indicesN = repmat([1:N-1], N - 1, 1);
+    indicesN = abs(indicesN - indicesN.') + 1;
+    
+    thetaIfft2 = ifft2(Theta);
+    thetaFft2 = fft2(Theta);
+    
+    firstColI = thetaIfft2(:, 1);
+    firstCol = (1./ (M * N)) .* thetaFft2(:, 1);
+    firstRowI = thetaIfft2(1, :).';
+    firstRow = (1./ (M * N)) .* thetaFft2(1, :).';
+    
+    A12 = ifft(fft(Theta, [], 2), [], 1);
+    A12 = A12(:, 2:end) .* (1 ./ N);
+    
+    A21 = ifft(fft(Theta, [], 1), [], 2);
+    A21 = A21(:, 2:end).' .* (1 ./ M);
+    
+    extVec = [0; firstCol];
+    ind = triu(indicesM) + 1 - eye(M);
+    A11 = reshape(extVec(ind), size(ind));
+    extVec = [0; firstColI];
+    ind = tril(indicesM) + 1;
+    A11 = A11 + reshape(extVec(ind), size(ind));
+    
+    extVec = [0; firstRow(1:end - 1)];
+    ind = triu(indicesN) + 1 - eye(N - 1);
+    A22 = reshape(extVec(ind), size(ind));
+    extVec = [0; firstRowI(1:end - 1)];
+    ind = tril(indicesN) + 1;
+    A22 = A22 + reshape(extVec(ind), size(ind));
+    
+    A = [A11, A12; A21, A22];
+    yZero = [xiHandle(x), etaHandle(y(2:end))].';
+    Phi0Theta = ifft2(Phi0 .* Theta);
+    Phi0Theta = [Phi0Theta(:, 1); Phi0Theta(1, 2:end).'];
+    B = yZero - Phi0Theta;
+    phi0 = linsolve(A, B);
+    phi(:, 1) = phi0(1:M);
+    phi(1, 2:end) = phi0(M + 1: end).';
 end
 

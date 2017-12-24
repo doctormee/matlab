@@ -1,4 +1,4 @@
-function [ res ] = solveDirichlet( fHandle, xiHandle, etaHandle, mu, M, N )
+function [ res ] = solveDirichlet( fHandle, xiHandle, etaHandle, mju, M, N )
     x = linspace(0, 1, M);
     xStep = 1 ./ M;
     y = linspace(0, 1, N);
@@ -6,7 +6,7 @@ function [ res ] = solveDirichlet( fHandle, xiHandle, etaHandle, mu, M, N )
     n = 1:N;
     m = 1:M;
     theta = @(k, l) 1 ./ ((-4 ./ xStep.^2) .* sin(pi .* (k - 1) ./ M) .^2 + ...
-        (-4 ./ yStep.^2) .* sin(pi .* (l - 1) ./ N) .^2 - mu);
+        (-4 ./ yStep.^2) .* sin(pi .* (l - 1) ./ N) .^2 - mju);
     phi = zeros(M, N);
     [yGrid, xGrid] = meshgrid(y(2:end), x(2:end));
     [nGrid, mGrid] = meshgrid(n, m);
@@ -18,18 +18,49 @@ function [ res ] = solveDirichlet( fHandle, xiHandle, etaHandle, mu, M, N )
     %this would be useful later on:
     indicesM = repmat([1:M], M, 1);
     indicesM = abs(indicesM - indicesM.') + 1;
+    
     indicesN = repmat([1:N-1], N - 1, 1);
     indicesN = abs(indicesN - indicesN.') + 1;
+    
     thetaIfft2 = ifft2(Theta);
     thetaFft2 = fft2(Theta);
+    
     firstColI = thetaIfft2(:, 1);
-    firstCol = thetaFft2(:, 1);
-    firstRowI = thetaIfft2(1, :);
-    firstRow = thetaFft2(1, :);
+    firstCol = (1./ (M * N)) .* thetaFft2(:, 1);
+    firstRowI = thetaIfft2(1, :).';
+    firstRow = (1./ (M * N)) .* thetaFft2(1, :).';
+    
     A12 = ifft(fft(Theta, [], 2), [], 1);
-    A12 = A12(2:end, :) .* (1 ./ N);
+    A12 = A12(:, 2:end) .* (1 ./ N);
+    
     A21 = ifft(fft(Theta, [], 1), [], 2);
     A21 = A21(:, 2:end).' .* (1 ./ M);
     
+    extVec = [0; firstCol];
+    ind = triu(indicesM) + 1 - eye(M);
+    A11 = reshape(extVec(ind), size(ind));
+    extVec = [0; firstColI];
+    ind = tril(indicesM) + 1;
+    A11 = A11 + reshape(extVec(ind), size(ind));
+    
+    extVec = [0; firstRow(1:end - 1)];
+    ind = triu(indicesN) + 1 - eye(N - 1);
+    A22 = reshape(extVec(ind), size(ind));
+    extVec = [0; firstRowI(1:end - 1)];
+    ind = tril(indicesN) + 1;
+    A22 = A22 + reshape(extVec(ind), size(ind));
+    
+    A = [A11, A12; A21, A22];
+    yZero = [xiHandle(x), etaHandle(y(2:end))].';
+    Phi0Theta = ifft2(Phi0 .* Theta);
+    Phi0Theta = [Phi0Theta(:, 1); Phi0Theta(1, 2:end).'];
+    B = yZero - Phi0Theta;
+    phi0 = linsolve(A, B);
+    phi(:, 1) = phi0(1:M);
+    phi(1, 2:end) = phi0(M + 1: end).';
+    
+    Phi = fft2(phi);
+    
+    res = ifft2(Phi .* Theta);
 end
 
