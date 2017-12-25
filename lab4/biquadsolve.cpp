@@ -18,8 +18,8 @@ void biquadsolve(vector<complex<double> >& A, vector<complex<double> >& B, vecto
             complex<double> x2;
             complex<double> x3;
             complex<double> x4;
-            double epsilon = 1e-7;
-            if (abs(a) > epsilon)
+            double moe = 1e-7;
+            if (abs(a) > moe)
             {
                 aux1 = (-b-sqrt(d))/(double(2)*a);
                 aux2 = (-b+sqrt(d))/(double(2)*a);
@@ -29,7 +29,7 @@ void biquadsolve(vector<complex<double> >& A, vector<complex<double> >& B, vecto
                 x4 = sqrt(aux2);
 
             }
-            else if (abs(b) > epsilon)
+            else if (abs(b) > moe)
             {
                 x1 = -sqrt(-c/b);
                 x2 = sqrt(-c/b);
@@ -56,9 +56,9 @@ void biquadsolve(vector<complex<double> >& A, vector<complex<double> >& B, vecto
             outMatrix_x4_imag[i] = x4.imag();
         }
         if (two_roots)
-            mexPrintf("Только два корня x1 и x2.\n");
+            mexPrintf("Only two roots: x1 and x2.\n");
         if (no_roots)
-            mexPrintf("Нет корней.\n");
+            mexPrintf("No roots.\n");
 }
 
 

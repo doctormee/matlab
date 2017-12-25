@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-const double eps = 0.0000000000001;
+const double moe = 0.0000000000001;
 double Norm(int n, double *x) 
 {
     int i;
@@ -69,7 +69,7 @@ void QRDecomposition(int n, double *A, double * Q, double *R)
             bufq[k] = Q[j * n + k];
 		}
 		R[j * n + j] = Norm(n, bufq);
-		if ( fabs(R[j * n + j]) < eps ) {
+		if ( fabs(R[j * n + j]) < moe ) {
 			printf("Bad matrix\n\n\n\n");
 			return;
 		}

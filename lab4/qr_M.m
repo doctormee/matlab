@@ -1,5 +1,5 @@
 function [Q, R] = qr_M(A)
-eps = 0.00000000001;
+moe = 0.00000000001;
 [m, n] = size(A);
 if (m~= n)
     disp('Error');
@@ -27,7 +27,7 @@ for j = 1 : n
         bufq(k) = Q(k, j);
     end;
     R(j, j) = norm(bufq);
-    if (abs(R(j, j)) < eps)
+    if (abs(R(j, j)) < moe)
         disp('Bad matrix');
         return;
     end;
