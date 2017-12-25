@@ -43,10 +43,10 @@ function [ res ] = solveDirichlet( fHandle, xiHandle, etaHandle, mju, M, N )
     ind = tril(indicesM) + 1;
     A11 = A11 + reshape(extVec(ind), size(ind));
     
-    extVec = [0; firstRow(1:end - 1)];
+    extVec = [0; firstRow];
     ind = triu(indicesN) + 1 - eye(N - 1);
     A22 = reshape(extVec(ind), size(ind));
-    extVec = [0; firstRowI(1:end - 1)];
+    extVec = [0; firstRowI];
     ind = tril(indicesN) + 1;
     A22 = A22 + reshape(extVec(ind), size(ind));
     
