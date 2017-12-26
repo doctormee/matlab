@@ -65,5 +65,7 @@ function [ res ] = solveDirichlet( fHandle, xiHandle, etaHandle, mju, M, N )
     Phi = fft2(phi);
     %and the Answer, finally
     res = ifft2(Phi .* Theta);
+    res(M, :) = res(1, :);
+    res(:, N) = res(:, 1);
 end
 

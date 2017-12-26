@@ -42,4 +42,5 @@ ylabel('Y');
 zlabel('Difference');
 find(abs(mat(:, 1) -  uAnalytical(x,zeros(size(x)),mju,u1Zero,u2Zero).') > .0001)
 find(abs(mat(1, :) -  uAnalytical(zeros(size(y)),y,mju,u1Zero,u2Zero)) > .0001)
+size(mat)
 
