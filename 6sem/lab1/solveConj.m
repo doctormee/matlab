@@ -15,6 +15,7 @@ function [ tMaj, t, xMaj, psi0Maj, alphaMaj ] = solveConj( tMaj, A, f, p, P, ...
         psi = @(t) expm(-A.' .* (t - t0)) * psi0;
         u = @(t) p + (P * psi(t)) ./ (sqrt(dot(psi(t), P * psi(t))));
         [t, x, te, xe, ie] = ode45(@(t, x) A * x + u(t) + f, [t0, T + t0], x0, opts);
+        
         if (~isempty(te))
             if (print)
                 plot(x(:, 1), x(:, 2), 'g', 'DisplayName', 'Suspiscious trajectory');

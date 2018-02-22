@@ -31,7 +31,7 @@ figTraj = figure();
 %solving with print
 [ tmaj, t, xmaj, psi0maj, alphaMaj ] = solveConj(inf, A, f, p, P, x0, t0,...
     T, 0, 2 .* pi, gridsize, opts, 1, figTraj);
-%or without
+% %or without
 % [ tmaj, t, xmaj, psi0maj, alphaMaj ] = solveConj(inf, A, f, p, P, x0, t0,...
 %     T, 0, 2 .* pi, gridsize, opts, 0, []);
 % plotting
@@ -44,10 +44,12 @@ contour(X, Y, setx1(X, Y), [c c], ...
 %now we need psimaj
 psimaj = @(t) expm(-A.' .* (t - t0)) * psi0maj;
 %check if solved
-disp(['Optimal time: ', num2str(tmaj)]);
 if (tmaj == inf)
+    disp('No solution!');
     return
 end
+disp(['Optimal time: ', num2str(tmaj)]);
+
 %measuring error
 disp(['Error: ', num2str(calcError(a, b, c, x11, x12, xmaj(end, :), ...
     psimaj, t, moe))]);
