@@ -2,8 +2,8 @@ clear;
 clc;
 u1Zero = 1;
 u2Zero = -2;
-M = 10;
-N = 10;
+M = 3;
+N = 3;
 mju = 1;
 x = linspace(0, 1, M + 1);
 xStep = 1 ./ M;
@@ -25,15 +25,17 @@ title('Solutions');
 xlabel('X');
 ylabel('Y');
 zlabel('U(x, y)');
-% figure;
-% someMat = real(solveDirichlet(@(x, y) -2.*(sin(pi.*x) + sin(pi*y)), @(x) sin(pi.*x), ...
-%     @(x) sin(pi.*x), 1, M, N));
-% surf( xGrid, yGrid, abs(someMat - sin(pi.*xGrid) - sin(pi.*yGrid)));
+figure;
+someMat = real(solveDirichlet(@(x, y) (sin(pi.*x) + sin(pi*y)), @(x) sin(pi.*x), ...
+    @(x) sin(pi.*x), 1 - pi.^2, M, N));
+someMat(:, end + 1) = someMat(:, 1);
+someMat(end + 1, :) = someMat(1, :);
+surf( xGrid, yGrid, abs(someMat - sin(pi.*xGrid) - sin(pi.*yGrid)));
 
-% title('Another boundaries (abs diff between analytical and numerical)');
-% xlabel('X');
-% ylabel('Y');
-% zlabel('U(x, y)');
+title('Another boundaries (abs diff between analytical and numerical)');
+xlabel('X');
+ylabel('Y');
+zlabel('U(x, y)');
 
 figure;
 surf( xGrid, yGrid, abs(anaMat - mat));
@@ -41,6 +43,3 @@ title('Absolute difference between numerical and analytical solutions');
 xlabel('X');
 ylabel('Y');
 zlabel('Difference');
-find(abs(mat(:, 1) -  uAnalytical(x,zeros(size(x)),mju,u1Zero,u2Zero).') > .0001)
-find(abs(mat(1, :) -  uAnalytical(zeros(size(y)),y,mju,u1Zero,u2Zero)) > .0001)
-

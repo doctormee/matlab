@@ -10,5 +10,5 @@ s.axes_handler = h;
 s.color = 'cyan';
 s.edgecolor = 'none';
 s.N = 100;
-drawBall(inf,s);
+drawBall(1.5,s);
 % drawManyBalls(3, {'blue'}, {'black'});
