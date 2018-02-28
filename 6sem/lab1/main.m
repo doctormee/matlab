@@ -1,13 +1,16 @@
 % constants
+timesImprov = 1;
 numGraph = 5;
 isPrint = 1;
-moe = 1e-3;
-scaleX = 5;
+moeSet = 1e-10;
+moeNorm = 5e-2;
+scaleX = 1000;
 scaleP = 1;
 numOfSteps = 1000;
-lspX = linspace((x0(1) - scaleX), x0(1) + scaleX, numOfSteps);
-lspY = linspace((x0(2) - scaleX), x0(2) + scaleX, numOfSteps);
-[X, Y] = meshgrid(lspX, lspY);
+margin = 1;
+% lspX = linspace((x0(1) - scaleX), x0(1) + scaleX, numOfSteps);
+% lspY = linspace((x0(2) - scaleX), x0(2) + scaleX, numOfSteps);
+% [X, Y] = meshgrid(lspX, lspY);
 lspUX = linspace((p(1) - scaleP), p(1) + scaleP, numOfSteps);
 lspUY = linspace((p(2) - scaleP), p(2) + scaleP, numOfSteps);
 [UX, UY] = meshgrid(lspUX, lspUY);
@@ -16,21 +19,22 @@ if (~exist('gridsize', 'var') || isnumeric(gridsize) && (gridsize <= 0))
 end
 P = [r ./ 9, 0; 0, r ./ 4];
 setx1 = @(x, y) a * (x - x11) .^ 2 + b * abs(y - x12);
-eventFcn = @(t, x) in_set(t, x, a, b, c, x11, x12, moe);
+eventFcn = @(t, x) in_set(t, x, a, b, c, x11, x12, moeSet);
 opts = odeset('Events', eventFcn);
 setP = @(x, y) 9 .* (x - p(1)).^2 + 4 .* (y - p(2)).^2;
 
 
 %already in?
-if (~in_set(0, x0, a, b, c, x11, x12, moe))
+if (~in_set(0, x0, a, b, c, x11, x12, moeSet))
     disp('Already in X1');
     return;
 end
 
 %main part
 %solving with print
+alphaSpace = linspace(0, 2.*pi, gridsize);
 [ tmaj, t, xmaj, psi0maj, alphaMaj, xSusp ] = solveConj(inf, A, f, p, P, x0, t0,...
-    T, 0, 2 .* pi, gridsize, opts, isPrint);
+    T, alphaSpace, opts, isPrint);
 %check if solved
 if (tmaj == inf)
     disp('No solution!');
@@ -41,16 +45,55 @@ disp(['Optimal time: ', num2str(tmaj)]);
 psimaj = @(t) expm(-A.' .* (t - t0)) * psi0maj;
 %measuring error
 disp(['Error: ', num2str(calcError(a, b, c, x11, x12, xmaj(end, :), ...
-    psimaj, t, moe))]);
-%%now let us try to improve locally:
-[ tmajNew, tNew, xmajNew, psi0majNew, alphaMajNew,  ] = ...
-    solveConj(tmaj, A, f, p, P, x0, t0,...
-    T, alphaMaj .* 0.9, alphaMaj .* 1.1, gridsize ./ 2, opts, 0);
-psimaj = @(t) expm(-A.' .* (t - t0)) * psi0majNew;
+    psimaj, t, moeNorm))]);
+xmajOld = xmaj;
+%improving the result
+for j = 1:timesImprov
+%now let us try to improve locally:
+alphaSpace = [linspace(alphaMaj .* 0.9, alphaMaj, gridsize), ...
+    linspace(alphaMaj, alphaMaj .* 1.1, gridsize)];
+    [ tmajNew, tNew, xmajNew, psi0majNew, alphaMajNew, xSuspNew  ] = ...
+        solveConj(tmaj, A, f, p, P, x0, t0,...
+        T, alphaSpace, opts, 0);
+
+% %improving globally
+%     alphaSpace = linspace(0, 2.*pi, (j + 1) .* gridsize);
+% [ tmajNew, tNew, xmajNew, psi0majNew, alphaMajNew, xSuspNew  ] = ...
+%     solveConj(tmaj, A, f, p, P, x0, t0,...
+%     T, alphaSpace, opts, isPrint);
+    if (tmajNew == tmaj)
+        disp('Can not improve any further');
+        disp(['Final optimal time: ', num2str(tmaj)]);
+        [err, n] = calcError(a, b, c, x11, x12,...
+            xmaj(end, :), psimaj, t, moeNorm);
+        disp(['Error: ', num2str(err)]);
+        break;
+    else
+        tmaj = tmajNew;
+        t = tNew;
+        xmaj = xmajNew;
+        psi0maj = psi0majNew;
+        alphaMaj = alphaMajNew;
+        if (~isempty(xSuspNew))
+            xSusp = xSuspNew;
+        end
+    end
+    psimaj = @(t) expm(-A.' .* (t - t0)) * psi0maj;
+    psi1 = -psimaj(t(end)) ./ norm(psimaj(t(end)));
+    disp(['Improved optimal time: ', num2str(tmaj)]);
+    [err, n] = calcError(a, b, c, x11, x12,...
+        xmaj(end, :), psimaj, t, moeNorm);
+    disp(['Error: ', num2str(err)]);
+end
+psimaj = @(t) expm(-A.' .* (t - t0)) * psi0maj;
 psi1 = -psimaj(t(end)) ./ norm(psimaj(t(end)));
-disp(['Improved optimal time: ', num2str(tmajNew)]);
-disp(['Error: ', num2str(err)]);
-%% plotting
+[err, n] = calcError(a, b, c, x11, x12,...
+        xmaj(end, :), psimaj, t, moeNorm);
+%% plotting only test trajectories
+[xl, xr, yl, yr] = getBorders(x0, x11, x12, a, b, c);
+lspX = linspace(xl - margin, xr + margin, scaleX);
+lspY = linspace(yl - margin, yr + margin, scaleX);
+[X, Y] = meshgrid(lspX, lspY);
 figTraj = figure();
 if (isPrint == 1)
     for i = 1:1:numel(xSusp)
@@ -58,7 +101,36 @@ if (isPrint == 1)
         hold on;
     end
 end
-plot(xmaj(:, 1), xmaj(:, 2), 'b', 'DisplayName', 'Optimal trajectory');
+grid on;
+hold on;
+%plotting the set
+contour(X, Y, setx1(X, Y), [c c], ...
+    'DisplayName', 'Set X_{1}', 'color', 'k');
+h = get(gca, 'children');
+h = [h(1); h(end)];
+legend(h);
+%% plotting set
+figure();
+contour(X, Y, setx1(X, Y), [c c], ...
+    'DisplayName', 'Set X_{1}', 'color', 'k');
+hold on;
+plot(x0(1), x0(2), 'r*', 'DisplayName', 'Set X_{0}');
+grid on;
+legend show;
+%% plotting
+%getting borders
+[xl, xr, yl, yr] = getBorders(x0, x11, x12, a, b, c);
+lspX = linspace(xl - margin, xr + margin, scaleX);
+lspY = linspace(yl - margin, yr + margin, scaleX);
+[X, Y] = meshgrid(lspX, lspY);
+figTraj = figure();
+% if (isPrint == 1)
+%     for i = 1:1:numel(xSusp)
+%         plot(xSusp{i}(:, 1), xSusp{i}(:, 2), 'g', 'DisplayName', 'Suspiscious Trajectories');
+%         hold on;
+%     end
+% end
+plot(xmajOld(:, 1), xmajOld(:, 2), 'b', 'DisplayName', 'Optimal trajectory');
 grid on;
 hold on;
 %plotting the set
@@ -66,18 +138,19 @@ contour(X, Y, setx1(X, Y), [c c], ...
     'DisplayName', 'Set X_{1}', 'color', 'k');
 
 figure(figTraj);
-plot(xmajNew(:, 1), xmajNew(:, 2), 'r', ...
-    'DisplayName', 'Improved optimal trajectory');
-grid on;
-hold on;
+if (xmaj ~= xmajOld)
+    plot(xmaj(:, 1), xmaj(:, 2), 'r', ...
+        'DisplayName', 'Improved optimal trajectory');
+    grid on;
+    hold on;
+end
 %we plot -psi(t1)
-quiver(xmajNew(end, 1), xmajNew(end, 2), psi1(1), psi1(2), ...
+quiver(xmaj(end, 1), xmaj(end, 2), psi1(1), psi1(2), ...
     'DisplayName', '-\Psi(t_1)');
-[err, n] = calcError(a, b, c, x11, x12, xmajNew(end, :), psimaj, t, moe);
 %normale vector
 n = n ./ norm(n);
 %plotting it too
-quiver(xmajNew(end, 1), xmajNew(end, 2), n(1), n(2), ...
+quiver(xmaj(end, 1), xmaj(end, 2), n(1), n(2), ...
     'DisplayName', 'normal', 'Color', 'r');
 %checking whether we have suspiscious trajectories
 h = get(gca, 'children');
@@ -94,14 +167,14 @@ ylabel('x_2');
 figTrajMaj = figure();
 p1 = subplot(2, 1, 1);
 p2 = subplot(2, 1, 2);
-plot(p1, tNew, xmajNew(:, 1), 'r', 'DisplayName', 'x_1');
+plot(p1, t, xmaj(:, 1), 'r', 'DisplayName', 'x_1');
 hold on;
 legend(p1, 'show');
 grid(p1, 'on');
 title(p1, 'Trajectory');
 xlabel(p1, 't');
 ylabel(p1, 'x_1');
-plot(p2, tNew, xmajNew(:, 2), 'b', 'DisplayName', 'x_2');
+plot(p2, t, xmaj(:, 2), 'b', 'DisplayName', 'x_2');
 legend(p2, 'show');
 grid on;
 title(p2, 'Trajectory');
@@ -115,14 +188,14 @@ uGrid = gridFunc(t, umaj);
 figU1 = figure();
 p1 = subplot(2, 1, 1);
 p2 = subplot(2, 1, 2);
-plot(p1, tNew, uGrid(:, 1), 'r', 'DisplayName', 'u_1');
+plot(p1, t, uGrid(:, 1), 'r', 'DisplayName', 'u_1');
 hold on;
 legend(p1, 'show');
 grid(p1, 'on');
 title(p1, 'Control');
 xlabel(p1, 't');
 ylabel(p1, 'u_1');
-plot(p2, tNew, uGrid(:, 2), 'b', 'DisplayName', 'u_2');
+plot(p2, t, uGrid(:, 2), 'b', 'DisplayName', 'u_2');
 legend(p2, 'show');
 grid on;
 title(p2, 'Control');
