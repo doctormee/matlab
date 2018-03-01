@@ -1,5 +1,5 @@
-function [ tMaj, tRet, xMaj, psi0Maj, alphaMaj, xSusp ] = solveConj( tMaj, A, f, p, P, ...
-    x0, t0, T, alphaSpace, opts, print )
+function [ tMaj, tRet, xMaj, psi0Maj, alphaMaj, xSusp ] = solveConj( tMaj, A, ...
+    f, p, P, x0, t0, T, alphaSpace, opts )
 %This function tries to solve the system in all directions 
 %%using Pontraygin Maximum Principle
     tRet = [];
@@ -13,10 +13,8 @@ function [ tMaj, tRet, xMaj, psi0Maj, alphaMaj, xSusp ] = solveConj( tMaj, A, f,
         psi = @(t) expm(-A.' .* (t - t0)) * psi0;
         u = @(t) p + (P * psi(t)) ./ (sqrt(dot(psi(t), P * psi(t))));
         [t, x, te, xe, ie] = ode45(@(t, x) A * x + u(t) + f, [t0, T + t0], x0, opts);
-        if (print)
-            xSusp{i} = x;
-            i = i + 1;
-        end
+        xSusp{i} = x;
+        i = i + 1;
         if (~isempty(te))
             if (te <= tMaj)
                 tRet = t;
