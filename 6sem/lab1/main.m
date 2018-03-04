@@ -216,6 +216,40 @@ grid minor;
 title(p2, 'Control');
 xlabel(p2, 't');
 ylabel(p2, 'u_2');
+%% plotting psi(t)
+%obtaining  
+psiGrid = gridFunc(t, psimaj);
+
+figPsi = figure();
+p1 = subplot(2, 1, 1);
+p2 = subplot(2, 1, 2);
+plot(p1, t, psiGrid(:, 1), 'r', 'DisplayName', '\Psi_1');
+hold on;
+legend(p1, 'show');
+grid(p1, 'on');
+grid(p1, 'minor');
+title(p1, '\Psi_1(t)');
+xlabel(p1, 't');
+ylabel(p1, '\Psi_1');
+plot(p2, t, psiGrid(:, 2), 'b', 'DisplayName', '\Psi_2');
+legend(p2, 'show');
+grid on;
+grid minor;
+title(p2, '\Psi_2(t)');
+xlabel(p2, 't');
+ylabel(p2, '\Psi_2');
+%% plotting psi in ohase
+%obtaining  
+psiGrid = gridFunc(t, psimaj);
+figPsi2 = figure();
+plot(psiGrid(:, 1), psiGrid(:, 2), 'r', 'DisplayName', '\Psi');
+
+grid on;
+grid minor;
+title('\Psi(t)');
+legend show;
+xlabel( '\Psi_1');
+ylabel( '\Psi_2');
 %% Plot P and Opt Control
 figU3 = figure();
 umaj = @(t) p + (P * psimaj(t)) ./ (sqrt(dot(psimaj(t), P * psimaj(t))));
