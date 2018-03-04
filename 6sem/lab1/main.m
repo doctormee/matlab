@@ -106,6 +106,8 @@ contour(X, Y, setx1(X, Y), [c c], ...
 h = get(gca, 'children');
 h = [h(1); h(end)];
 legend(h);
+xlabel('x_1');
+ylabel('x_2');
 title('Test trajectories');
 %% plotting set
 setx1 = @(x, y) a * (x - x11) .^ 2 + b * abs(y - x12);
